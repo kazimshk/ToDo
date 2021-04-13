@@ -38,7 +38,7 @@ function showToDos() {
         html += `
     <div class="card" style="width: 42rem;">
             <div class="my-2 card-body">
-              <h5 class="card-title">ToDo ${index + 1} Task </h5>
+              <h5 class="card-title">ToDo # ${index + 1} Task </h5>
               <p class="card-text"> ${element} </p>
               <button id="${index}" onclick="deleteToDo(this.id)" class="btn btn-primary">Delete</button>
             </div>
