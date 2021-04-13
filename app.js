@@ -1,5 +1,4 @@
 
-console.log("Welcome to notes app");
 let addBtn = document.getElementById('addBtn');
 showToDos();
 addBtn.addEventListener("click", function(){
@@ -27,11 +26,6 @@ function showToDos() {
         notesObj = JSON.parse(notes);
     }
      let html = "";
-    // let today = new Date();
-    // let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-    // let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-
-
     notesObj.forEach(function (element, index) {
        
 
@@ -45,7 +39,7 @@ function showToDos() {
           </div>`
     })
     let notesElm = document.getElementById("notes");
-    console.log(notesElm);
+   
     if (notesObj.length != null) {
         notesElm.innerHTML = html;
     }
@@ -62,7 +56,7 @@ function deleteToDo(index){
     else {
         notesObj = JSON.parse(notes);
     }
-    notesObj.splice(index,1);
+    notesObj.splice(index,1);                                                       //(position,deleteCount)
     localStorage.setItem("notes",JSON.stringify(notesObj));
     showToDos();
 }
