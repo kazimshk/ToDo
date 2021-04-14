@@ -1,67 +1,59 @@
-let addBtn = document.getElementById('addBtn');
-let fetchBtn = document.getElementById('fetchBtn');
-let addTxt = document.getElementById("inputField");
+ let addBtn = document.getElementById('addBtn');
+ let notes = []
+ let taskNum=0;
+ if (localStorage.getItem("notes")) {
+   notes = JSON.parse(localStorage.getItem("notes"));;
+ }
 
-fetchBtn.addEventListener('click', buttonClickHandler);
+ showToDos();
 
-function buttonClickHandler() {
-  console.log('You have clicked the fetchBtn')
-  fetch('https://jsonplaceholder.typicode.com/todos', {                         //it returns the promise
-    method: 'POST',
-    body: JSON.stringify({
-      title: addTxt.value,
+ addBtn.addEventListener("click", function () {
+   let addTxt = document.getElementById("inputField");
 
-    }),
-    headers: {
-      'Content-type': 'application/json; charset=UTF-8',
-    },
-  })
-    .then((response) => response.json())
-    .then((json) => console.log(json));
+   let today = new Date();
+   console.log("today " + today);
 
-};
+   class myObj {
+       constructor(input, num, dTime){
+     this.title = input;
+     this.number = num; 
+     this.dateTime = dTime;
+       }
+   }
+   taskNum = taskNum+1;
+   let m = new myObj(addTxt.value, taskNum, today);
+   notes.push(m);                                                    //add value to the notes obj
+   localStorage.setItem("notes", JSON.stringify(notes));               //         updates the value in localstorage
+   addTxt.value = "";
+   console.log(notes);
+   showToDos();
+ });
 
-addBtn.addEventListener("click", function () {
-  const xhr = new XMLHttpRequest();
-  xhr.open('GET', 'https://jsonplaceholder.typicode.com/todos/', true);
+ function showToDos() {
+   let html = "";
+   notes.forEach(function (element, index) {
+     html += `
+     <div class="card" style="width: 42rem;">
+             <div class="my-2 card-body">
+               <h5 class="card-title">ToDo # ${element.number } Task .       .${element.dateTime} </h5>
+               <p class="card-text"> ${element.title} </p>
+               <button id="${index}" onclick="deleteToDo(this.id)" class="btn btn-primary">Delete</button>
+             </div>
+           </div>`
+   })
+   let notesElm = document.getElementById("notes");
 
+   if (notes.length > 0) {
+     notesElm.innerHTML = html;
+   }
+   else {
+     taskNum=0;
+     notesElm.innerHTML = `Nothing to SHow`;
+   }
+ }
 
-  xhr.onprogress = function () {
-    console.log("processing");
-  }
-
-  xhr.onload = function () {
-    if (this.status === 200) {
-      console.log(this.responseText);
-      let obj = JSON.parse(this.responseText);
-      console.log(obj);
-      let list = document.getElementById('list');
-      let str = ""
-      for (key in obj) {
-
-        str += `
-    <div class="card" style="width: 42rem;">
-            <div class="my-2 card-body">
-              <h5 class="card-title">ToDo # ${obj[key].id} Task </h5>
-              <p class="card-text"> ${obj[key].title} </p>
-              <button id="${obj[key].id}" onclick="deleteToDo(this.id)" class="btn btn-primary">Delete</button>
-            </div>
-          </div>`
-      }
-      list.innerHTML = str;
-    }
-    else {
-      console.log("Some error occured")
-    }
-  }
-  xhr.send();
-});
-
-
-function deleteToDo(index) {
-  fetch('https://jsonplaceholder.typicode.com/todos/${index}', {
-    method: 'DELETE',
-  });
-}
-
-/////////////////////////////////////////////////////
+ function deleteToDo(index) {
+   notes.splice(index, 1);                                                     //  (position,deleteCount)
+   localStorage.setItem("notes", JSON.stringify(notes));
+   showToDos();
+ }
